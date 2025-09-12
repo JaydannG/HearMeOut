@@ -1,27 +1,22 @@
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import axios from 'axios';
 
 export default function SearchBar() {
     const [query, setQuery] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            const response = await axios.post("http://localhost:5000/submit-form", {
-                artist: query,
-            });
-
-            console.log("Server response: ", response);
-        } catch (error) {
-            console.error("Error submitting form: ", error);
+        if (query.trim()) {
+            navigate(`/game?artist=${encodeURIComponent(query)}`)
         }
     };
     
     return (
         <form onSubmit={handleSubmit}>
             <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Enter an artist"/>
-            <button type="submit">Search</button>
+            <button type="submit">Play</button>
         </form>
     );
 }

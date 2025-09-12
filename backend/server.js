@@ -23,7 +23,7 @@ async function getSpotifyToken() {
                 Authorization:
                     "Basic " +
                     Buffer.from(process.env.SPOTIFY_CLIENT_ID + ":" + process.env.SPOTIFY_CLIENT_SECRET).toString("base64"),
-                    "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/x-www-form-urlencoded",
             },
         }
     );
@@ -44,11 +44,16 @@ app.post('/submit-form', async (req, res) => {
 
         const tracks = searchRes.data.tracks.items;
         if (tracks.length === 0) {
-            return res.status(404).json({ error: "Could not find any tracks"});
+            return res.status(404).json({ error: "Could not find any tracks" });
         }
 
         const randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
-        console.log(randomTrack.name);
+
+        res.json({
+            artist: artist,
+            track: randomTrack.name,
+            album: randomTrack.album,
+        });
     } catch (error) {
         console.error("Error fetching from Spotify", error);
         res.status(500).json({ error: "Error with Spotify API"});
