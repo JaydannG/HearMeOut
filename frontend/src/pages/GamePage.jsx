@@ -5,6 +5,7 @@ import axios from 'axios';
 export default function GamePage() {
     const [params] = useSearchParams();
     const artist = params.get('artist');
+    const artistId = params.get('artistId');
 
     const [track, setTrack] = useState(null);
     const [guess, setGuess] = useState("");
@@ -19,6 +20,7 @@ export default function GamePage() {
                 setError(null);
                 const response = await axios.post("http://localhost:5000/submit-form", {
                     artist,
+                    artistId,
                 });
                 setTrack(response.data);
             } catch (error) {
@@ -58,7 +60,9 @@ export default function GamePage() {
                 <div>
                     <h3>{track.track}</h3>
                     <p>by {track.artist}</p>
-                    <p>from {track.album.name}</p>
+                    {track.album && track.album.name && (
+                        <p>from {track.album.name}</p>
+                    )}
                     <form onSubmit={handleGuess}>
                         <input 
                             type="text" 
