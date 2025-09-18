@@ -17,12 +17,9 @@ export default function GamePage() {
             try {
                 setLoading(true);
                 setError(null);
-                console.log("Fetching track for artist:", artist);
                 const response = await axios.post("http://localhost:5000/submit-form", {
                     artist,
                 });
-
-                console.log("Response received:", response.data);
                 setTrack(response.data);
             } catch (error) {
                 console.error("Error fetching track:", error);
@@ -33,8 +30,6 @@ export default function GamePage() {
         }
         if (artist) {
             getTrack();
-        } else {
-            console.log("No artist found in URL params");
         }
     }, [artist]);
 
@@ -49,15 +44,9 @@ export default function GamePage() {
         }
     };
 
-    console.log("GamePage render - artist:", artist, "loading:", loading, "error:", error, "track:", track);
-
     return (
         <div>
             <h2>Guess the Song</h2>
-            <p>Debug: Artist = {artist || 'undefined'}</p>
-            <p>Debug: Loading = {loading.toString()}</p>
-            <p>Debug: Error = {error || 'none'}</p>
-            <p>Debug: Track = {track ? 'loaded' : 'null'}</p>
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (

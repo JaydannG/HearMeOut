@@ -31,6 +31,35 @@ async function getSpotifyToken() {
     return response.data.access_token;
 }
 
+// function to search for artists (autocomplete)
+app.get('/search-artists', async (req, res) => {
+    try {
+        const query = req.query.q;
+        if (!query || query.length < 2) {
+            return res.json([]);
+        }
+
+        const token = await getSpotifyToken();
+        const searchRes = await axios.get(`${BASE_URL}/search`, {
+            headers: { Authorization: `Bearer ${token}` },
+            params: { q: query, type: "artist", limit: 10 },
+        });
+
+        const artists = searchRes.data.artists.items.map(artist => ({
+            id: artist.id,
+            name: artist.name,
+            popularity: artist.popularity,
+            genres: artist.genres.slice(0, 3), // Limit to first 3 genres
+            image: artist.images.length > 0 ? artist.images[0].url : null
+        }));
+
+        res.json(artists);
+    } catch (error) {
+        console.error("Error searching artists", error);
+        res.status(500).json({ error: "Error searching artists" });
+    }
+});
+
 // function to get the form post from the frontend
 app.post('/submit-form', async (req, res) => {
     try {
